@@ -10,9 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
 import { api, type RouterOutputs } from "@/trpc/react"
 import { useLocalStorage } from "usehooks-ts"
-import { Plus } from "lucide-react"
+import { Plus, Mail } from "lucide-react"
 import { getAurinkoAuthorizationUrl } from "@/lib/aurinko"
 import { toast } from "sonner"
 
@@ -23,7 +24,7 @@ interface AccountSwitcherProps {
 export function AccountSwitcher({
   isCollapsed
 }: AccountSwitcherProps) {
-  const { data: accounts } = api.mail.getAccounts.useQuery()
+  const { data: accounts, isLoading } = api.mail.getAccounts.useQuery()
   const [accountId, setAccountId] = useLocalStorage('accountId', '')
 
   React.useEffect(() => {
@@ -45,11 +46,50 @@ export function AccountSwitcher({
         },
       })
     }
-  }, [accounts])
+  }, [accounts, accountId, setAccountId])
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="items-center gap-2 flex w-full">
+        <div className="h-9 w-full animate-pulse bg-muted rounded-md" />
+      </div>
+    )
+  }
 
+  // Show connect button when no accounts
+  if (!accounts || accounts.length === 0) {
+    return (
+      <div className="items-center gap-2 flex w-full px-2">
+        <Button
+          onClick={async () => {
+            try {
+              const url = await getAurinkoAuthorizationUrl('Google')
+              window.location.href = url
+            } catch (error) {
+              toast.error((error as Error).message)
+            }
+          }}
+          className={cn(
+            "w-full flex items-center gap-2",
+            isCollapsed && "w-9 p-0"
+          )}
+          size={isCollapsed ? "icon" : "default"}
+        >
+          {isCollapsed ? (
+            <Mail className="h-4 w-4" />
+          ) : (
+            <>
+              <Plus className="h-4 w-4" />
+              Connect Email
+            </>
+          )}
+        </Button>
+      </div>
+    )
+  }
 
-  if (!accounts) return <></>
+  // Show account selector when accounts exist
   return (
     <div className="items-center gap-2 flex w-full">
       <Select defaultValue={accountId} onValueChange={setAccountId}>
@@ -91,7 +131,7 @@ export function AccountSwitcher({
             } catch (error) {
               toast.error((error as Error).message)
             }
-          }} className="relative flex hover:bg-gray-50 w-full cursor-pointer items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+          }} className="relative flex hover:bg-gray-50 dark:hover:bg-gray-800 w-full cursor-pointer items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
             <Plus className="size-4 mr-1" />
             Add account
           </div>
