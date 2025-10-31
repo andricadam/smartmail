@@ -11,14 +11,15 @@ import { Button } from "@/components/ui/button"
 import ComposeButton from "@/app/mail/components/compose-button"
 import WebhookDebugger from "@/app/mail/components/webhook-debugger"
 import TopAccountSwitcher from "./top-account-switcher"
+import AuthoriseButton from "@/components/authorise-button"
 export default function Home() {
-  // return <AuthoriseButton />
   return <>
     <div className="absolute bottom-4 left-4">
       <div className="flex items-center gap-4">
         <UserButton />
         <ModeToggle />
         <ComposeButton />
+        <AuthoriseButton />
         {process.env.NODE_ENV === 'development' && (
           <WebhookDebugger />
         )}
