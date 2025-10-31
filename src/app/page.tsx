@@ -5,6 +5,7 @@ import { ModeToggle } from "@/components/theme-toggle"
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
+import GetStartedButton from '@/components/get-started-button'
 
 const LandingPage = async () => {
     // Removed auto-redirect to allow landing page access even when logged in
@@ -27,10 +28,7 @@ const LandingPage = async () => {
                     Smartmail is a minimalistic, AI-powered email client that empowers you to manage your email with ease.
                 </p>
                 <div className="space-x-4">
-                    <Button className="relative group overflow-hidden transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] hover:shadow-blue-500/50 active:scale-105">
-                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
-                        <Link href="/mail" className="relative z-10">Get Started</Link>
-                    </Button>
+                    <GetStartedButton />
                     <Link href='https://start-saas.com?utm=normalhuman' className="inline-block">
                         <Button 
                             variant="outline" 
